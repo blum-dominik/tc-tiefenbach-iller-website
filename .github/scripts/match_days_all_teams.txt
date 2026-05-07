@@ -1,0 +1,36 @@
+TC Tiefenbach/Iller – Alle Spieltermine (Stand: 20.04.2026)
+============================================================
+
+Team          Datum                  Heimmannschaft                      Gastmannschaft                  Status
+------------  ---------------------  ----------------------------------  ------------------------------  ------
+Herren 30     Sa. 02.05.2026, 14:00  TC Pfaffenhofen                     TC Tiefenbach/Iller             OFFEN
+Damen I       So. 03.05.2026, 10:00  TC Tiefenbach/Iller                 SV Gablingen                    OFFEN
+Knaben 15     Fr. 08.05.2026, 15:00  TC Tiefenbach/Iller                 SSV Illerberg-Thal              OFFEN
+Bambini 12    Sa. 09.05.2026, 09:00  TC Tiefenbach/Iller                 FC Heimertingen II              OFFEN
+Damen II      So. 10.05.2026, 09:00  TSV Babenhausen II                  TC Tiefenbach/Iller II          OFFEN
+Damen I       So. 10.05.2026, 10:00  TC Tiefenbach/Iller                 TC Rot-Weiß Gersthofen II       OFFEN
+Bambini 12    Sa. 16.05.2026, 09:00  TC Altenstadt/Iller II              TC Tiefenbach/Iller             OFFEN
+Herren 30     Sa. 16.05.2026, 13:00  TC Tiefenbach/Iller                 TTC Reutti                      OFFEN
+Damen II      So. 17.05.2026, 09:00  TC Tiefenbach/Iller II              DJK SV Ost Memmingen II         OFFEN
+Damen I       So. 17.05.2026, 10:00  FC Heimertingen                     TC Tiefenbach/Iller             OFFEN
+Knaben 15     Fr. 12.06.2026, 15:00  SC Vöhringen II                     TC Tiefenbach/Iller             OFFEN
+Bambini 12    Sa. 13.06.2026, 09:00  TC Illertissen                      TC Tiefenbach/Iller             OFFEN
+Herren 30     Sa. 13.06.2026, 13:00  TC Tiefenbach/Iller                 TC Elchingen                    OFFEN
+Damen II      So. 14.06.2026, 14:00  TC Kettershausen                    TC Tiefenbach/Iller II          OFFEN
+Knaben 15     Fr. 19.06.2026, 15:00  Jugend-TeG oberes Günztal II        TC Tiefenbach/Iller             OFFEN
+Bambini 12    Sa. 20.06.2026, 09:00  TC Tiefenbach/Iller                 Jugend-TeG oberes Günztal III   OFFEN
+Damen II      So. 21.06.2026, 09:00  TC Tiefenbach/Iller II              TC Illertissen                  OFFEN
+Damen I       So. 21.06.2026, 10:00  TC Augsburg Siebentisch II          TC Tiefenbach/Iller             OFFEN
+Bambini 12    Sa. 27.06.2026, 09:00  TC Tiefenbach/Iller                 TC Kettershausen                OFFEN
+Herren 30     Sa. 27.06.2026, 13:00  SV Münsterhausen                    TC Tiefenbach/Iller             OFFEN
+Damen II      So. 28.06.2026, 09:00  TV Memmingen                        TC Tiefenbach/Iller II          OFFEN
+Damen I       So. 28.06.2026, 10:00  TC Legau                            TC Tiefenbach/Iller             OFFEN
+Bambini 12    Sa. 04.07.2026, 09:00  TSV Babenhausen III                 TC Tiefenbach/Iller             OFFEN
+Herren 30     Sa. 04.07.2026, 13:00  TC Tiefenbach/Iller                 FC Gundelfingen II              OFFEN
+Damen II      So. 05.07.2026, 09:00  TC Tiefenbach/Iller II              TC Memmingen                    OFFEN
+Damen I       So. 05.07.2026, 10:00  TC Tiefenbach/Iller                 TC Rot-Weiß Nördlingen          OFFEN
+Knaben 15     Fr. 10.07.2026, 15:00  TC Tiefenbach/Iller                 FC Heimertingen                 OFFEN
+Herren 30     Sa. 11.07.2026, 13:00  TC Günzburg                         TC Tiefenbach/Iller             OFFEN
+Damen I       So. 12.07.2026, 10:00  TSV Zusmarshausen                   TC Tiefenbach/Iller             OFFEN
+Knaben 15     Fr. 17.07.2026, 15:00  RSV Wullenstetten                   TC Tiefenbach/Iller             OFFEN
+Knaben 15     Fr. 24.07.2026, 15:00  TC Tiefenbach/Iller                 TC Altenstadt/Iller             OFFEN
