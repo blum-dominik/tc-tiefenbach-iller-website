@@ -1,4 +1,41 @@
 (function () {
+  // Dark mode toggle
+  const darkToggle = document.querySelector("[data-dark-toggle]");
+  const html = document.documentElement;
+  const savedTheme = localStorage.getItem("theme") || "";
+
+  function updateDarkToggleButton(isDark) {
+    if (!darkToggle) return;
+    darkToggle.setAttribute("aria-pressed", String(isDark));
+  }
+
+  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const useDark = savedTheme === "dark" || (savedTheme === "" && prefersDark);
+
+  if (useDark) {
+    html.setAttribute("data-theme", "dark");
+    updateDarkToggleButton(true);
+  } else {
+    html.removeAttribute("data-theme");
+    updateDarkToggleButton(false);
+  }
+
+  if (darkToggle) {
+    darkToggle.addEventListener("click", function () {
+      const isDark = html.getAttribute("data-theme") === "dark";
+      if (isDark) {
+        html.removeAttribute("data-theme");
+        localStorage.setItem("theme", "light");
+        updateDarkToggleButton(false);
+      } else {
+        html.setAttribute("data-theme", "dark");
+        localStorage.setItem("theme", "dark");
+        updateDarkToggleButton(true);
+      }
+    });
+  }
+
+  // Navigation toggle
   const navToggle = document.querySelector("[data-nav-toggle]");
   const nav = document.querySelector("[data-primary-nav]");
 
