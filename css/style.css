@@ -153,12 +153,14 @@ img {
   align-items: center;
   gap: var(--space-2);
   text-decoration: none;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .brand-mark {
   width: 40px;
   height: 40px;
-  background-image: url("../images/tc-tiefenbach-logo-without-text.svg");
+  background-image: url("../images/tc-tiefenbach-logo-without-text-white.svg");
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -177,6 +179,7 @@ img {
   padding: 0.55rem 0.85rem;
   color: var(--color-black);
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .primary-nav {
@@ -468,6 +471,40 @@ tr.next-event td {
   }
 }
 
+@media (max-width: 959px) {
+  .brand {
+    min-width: 0;
+  }
+
+  .brand-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dark-mode-toggle {
+    order: 2;
+    margin-left: auto;
+    width: 40px;
+    height: 24px;
+  }
+
+  .dark-mode-toggle::after {
+    left: 3px;
+    width: 18px;
+    height: 18px;
+  }
+
+  .nav-toggle {
+    order: 3;
+    margin-left: 0.25rem;
+  }
+
+  .primary-nav {
+    order: 4;
+  }
+}
+
 @media (min-width: 960px) {
   .nav-toggle {
     display: none;
@@ -499,6 +536,249 @@ tr.next-event td {
   }
 }
 
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-ink: #f0f0f0;
+    --color-gray-100: #2a2a2a;
+    --color-gray-300: #444444;
+    --color-gray-500: #999999;
+    --color-red-dark: #d7252c;
+    --shadow-soft: 0 16px 40px rgb(0 0 0 / 0.4);
+  }
+
+  body {
+    background: #1a1a1a;
+    color: var(--color-ink);
+  }
+
+  .home-page,
+  .about-page,
+  .schedule-page,
+  .membership-page,
+  .news-page,
+  .contact-page {
+    background: #1a1a1a;
+  }
+
+  .site-header {
+    background: rgb(26 26 26 / 0.92);
+    border-bottom-color: var(--color-red);
+  }
+
+  .nav-toggle {
+    border-color: var(--color-ink);
+    background: transparent;
+    color: var(--color-ink);
+  }
+
+  .primary-nav {
+    background: #1a1a1a;
+    border-bottom-color: rgb(255 255 255 / 0.1);
+  }
+
+  .primary-nav a:hover,
+  .primary-nav a:focus-visible {
+    background: var(--color-gray-100);
+    color: var(--color-white);
+  }
+
+  .primary-nav a[aria-current="page"] {
+    color: var(--color-white);
+  }
+
+  .btn-secondary {
+    color: var(--color-ink);
+    border-color: var(--color-ink);
+  }
+
+  .card {
+    background: #252525;
+    border-color: rgb(255 255 255 / 0.1);
+    box-shadow: 0 6px 14px rgb(0 0 0 / 0.3);
+  }
+
+  .card-muted {
+    background: linear-gradient(180deg, #252525, #1f1f1f);
+  }
+
+  table {
+    background: #252525;
+  }
+
+  th,
+  td {
+    border-bottom-color: var(--color-gray-300);
+  }
+
+  th {
+    background: #333333;
+    color: var(--color-white);
+  }
+
+  tr.next-event td {
+    background: rgb(199 22 31 / 0.2);
+  }
+
+  .month-break td {
+    background: #252525;
+    color: var(--color-red-soft);
+  }
+
+  .table-wrap {
+    border-color: rgb(255 255 255 / 0.1);
+  }
+}
+
+html[data-theme="dark"] {
+  --color-ink: #f0f0f0;
+  --color-gray-100: #2a2a2a;
+  --color-gray-300: #444444;
+  --color-gray-500: #999999;
+  --color-red-dark: #d7252c;
+  --shadow-soft: 0 16px 40px rgb(0 0 0 / 0.4);
+}
+
+html[data-theme="dark"] body {
+  background: #1a1a1a;
+  color: var(--color-ink);
+}
+
+html[data-theme="dark"] .home-page,
+html[data-theme="dark"] .about-page,
+html[data-theme="dark"] .schedule-page,
+html[data-theme="dark"] .membership-page,
+html[data-theme="dark"] .news-page,
+html[data-theme="dark"] .contact-page {
+  background: #1a1a1a;
+}
+
+html[data-theme="dark"] .site-header {
+  background: rgb(26 26 26 / 0.92);
+  border-bottom-color: var(--color-red);
+}
+
+html[data-theme="dark"] .nav-toggle {
+  border-color: var(--color-ink);
+  background: transparent;
+  color: var(--color-ink);
+}
+
+html[data-theme="dark"] .primary-nav {
+  background: #1a1a1a;
+  border-bottom-color: rgb(255 255 255 / 0.1);
+}
+
+html[data-theme="dark"] .primary-nav a:hover,
+html[data-theme="dark"] .primary-nav a:focus-visible {
+  background: var(--color-gray-100);
+  color: var(--color-white);
+}
+
+html[data-theme="dark"] .primary-nav a[aria-current="page"] {
+  color: var(--color-white);
+}
+
+html[data-theme="dark"] .btn-secondary {
+  color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+html[data-theme="dark"] .card {
+  background: #252525;
+  border-color: rgb(255 255 255 / 0.1);
+  box-shadow: 0 6px 14px rgb(0 0 0 / 0.3);
+}
+
+html[data-theme="dark"] .card-muted {
+  background: linear-gradient(180deg, #252525, #1f1f1f);
+}
+
+html[data-theme="dark"] table {
+  background: #252525;
+}
+
+html[data-theme="dark"] th,
+html[data-theme="dark"] td {
+  border-bottom-color: var(--color-gray-300);
+}
+
+html[data-theme="dark"] th {
+  background: #333333;
+  color: var(--color-white);
+}
+
+html[data-theme="dark"] tr.next-event td {
+  background: rgb(199 22 31 / 0.2);
+}
+
+html[data-theme="dark"] .month-break td {
+  background: #252525;
+  color: var(--color-red-soft);
+}
+
+html[data-theme="dark"] .table-wrap {
+  border-color: rgb(255 255 255 / 0.1);
+}
+
+.dark-mode-toggle {
+  border: 1px solid var(--color-black);
+  background: transparent;
+  border-radius: 999px;
+  width: 46px;
+  height: 26px;
+  padding: 0;
+  position: relative;
+  color: transparent;
+  font-size: 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dark-mode-toggle::after {
+  content: "☾";
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-black);
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  line-height: 18px;
+  transform: translateY(-50%);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.dark-mode-toggle[aria-pressed="true"] {
+  border-color: var(--color-red);
+  background: var(--color-red);
+}
+
+.dark-mode-toggle[aria-pressed="true"]::after {
+  content: "☀";
+  transform: translateX(20px) translateY(-50%);
+}
+
+html[data-theme="dark"] .dark-mode-toggle {
+  border-color: var(--color-ink);
+  background: transparent;
+}
+
+html[data-theme="dark"] .dark-mode-toggle::after {
+  background: var(--color-white);
+}
+
+.dark-mode-toggle:hover {
+  opacity: 0.9;
+}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
