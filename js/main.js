@@ -330,4 +330,13 @@
       });
     }
   }
+
+  // Mobile accordion: Datum + Was summary, expand on tap
+  var accordionRows = document.querySelectorAll("table tbody tr[data-event-date]");
+  accordionRows.forEach(function(row) {
+    row.addEventListener("click", function(e) {
+      if (e.target.closest("a, button")) { return; }
+      row.classList.toggle("is-open");
+    });
+  });
 })();
