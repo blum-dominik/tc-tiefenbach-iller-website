@@ -862,6 +862,7 @@ td.cal-actions {
   html:not([data-theme="light"]) .month-break td {
     background: #252525;
     color: var(--color-red-soft);
+    border-color: var(--color-red);
   }
 
   html:not([data-theme="light"]) .table-wrap {
@@ -954,6 +955,7 @@ html[data-theme="dark"] tr.next-event td {
 html[data-theme="dark"] .month-break td {
   background: #252525;
   color: var(--color-red-soft);
+  border-color: var(--color-red);
 }
 
 html[data-theme="dark"] .table-wrap {
