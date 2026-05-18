@@ -264,4 +264,70 @@
       row.appendChild(tdCal);
     });
   }
+
+  // Match day filter
+  var matchTable = document.getElementById("events-calendar");
+  var filterBar = document.getElementById("matchdays-filter");
+  if (matchTable && filterBar) {
+    var matchEventRows = matchTable.querySelectorAll("tbody tr[data-event-date]");
+    var teams = [];
+    matchEventRows.forEach(function (row) {
+      var team = row.querySelectorAll("td")[1];
+      var name = team ? team.textContent.trim() : "";
+      if (name && teams.indexOf(name) === -1) { teams.push(name); }
+    });
+
+    if (teams.length > 1) {
+      function updateMonthBreaks() {
+        var tbodyRows = matchTable.querySelectorAll("tbody tr");
+        for (var i = 0; i < tbodyRows.length; i++) {
+          if (!tbodyRows[i].classList.contains("month-break")) { continue; }
+          var hasVisible = false;
+          for (var j = i + 1; j < tbodyRows.length; j++) {
+            if (tbodyRows[j].classList.contains("month-break")) { break; }
+            if (!tbodyRows[j].classList.contains("is-hidden")) { hasVisible = true; break; }
+          }
+          tbodyRows[i].classList.toggle("is-hidden", !hasVisible);
+        }
+      }
+
+      function applyFilter(selectedTeam) {
+        matchEventRows.forEach(function (row) {
+          var name = row.querySelectorAll("td")[1];
+          var team = name ? name.textContent.trim() : "";
+          row.classList.toggle("is-hidden", !!(selectedTeam && team !== selectedTeam));
+        });
+        updateMonthBreaks();
+      }
+
+      var allBtn = document.createElement("button");
+      allBtn.className = "filter-btn is-active";
+      allBtn.type = "button";
+      allBtn.textContent = "Alle";
+      allBtn.setAttribute("aria-pressed", "true");
+      filterBar.appendChild(allBtn);
+
+      teams.forEach(function (team) {
+        var btn = document.createElement("button");
+        btn.className = "filter-btn";
+        btn.type = "button";
+        btn.textContent = team;
+        btn.setAttribute("aria-pressed", "false");
+        btn.dataset.team = team;
+        filterBar.appendChild(btn);
+      });
+
+      filterBar.addEventListener("click", function (e) {
+        var btn = e.target.closest(".filter-btn");
+        if (!btn) { return; }
+        filterBar.querySelectorAll(".filter-btn").forEach(function (b) {
+          b.classList.remove("is-active");
+          b.setAttribute("aria-pressed", "false");
+        });
+        btn.classList.add("is-active");
+        btn.setAttribute("aria-pressed", "true");
+        applyFilter(btn.dataset.team || "");
+      });
+    }
+  }
 })();
