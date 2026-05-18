@@ -16,7 +16,11 @@
     html.setAttribute("data-theme", "dark");
     updateDarkToggleButton(true);
   } else {
-    html.removeAttribute("data-theme");
+    if (savedTheme === "light") {
+      html.setAttribute("data-theme", "light");
+    } else {
+      html.removeAttribute("data-theme");
+    }
     updateDarkToggleButton(false);
   }
 
@@ -24,7 +28,7 @@
     darkToggle.addEventListener("click", function () {
       const isDark = html.getAttribute("data-theme") === "dark";
       if (isDark) {
-        html.removeAttribute("data-theme");
+        html.setAttribute("data-theme", "light");
         localStorage.setItem("theme", "light");
         updateDarkToggleButton(false);
       } else {
