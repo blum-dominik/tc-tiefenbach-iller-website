@@ -799,3 +799,51 @@ html[data-theme="dark"] .dark-mode-toggle::after {
     transform: none;
   }
 }
+
+/* Calendar action buttons */
+.btn-cal-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.btn-cal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.6rem;
+  border: 2px solid transparent;
+  white-space: nowrap;
+  line-height: 1;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-cal:hover {
+  transform: translateY(-1px);
+}
+
+.btn-cal:focus-visible {
+  outline: 3px solid var(--color-red);
+  outline-offset: 2px;
+}
+
+.btn-cal-google,
+.btn-cal-ics {
+  background: var(--color-red);
+  color: var(--color-white);
+}
+
+.btn-cal-google:hover,
+.btn-cal-ics:hover {
+  background: var(--color-red-dark);
+}
+
+td.cal-actions {
+  white-space: nowrap;
+  vertical-align: middle;
+}
