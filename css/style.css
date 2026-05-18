@@ -538,7 +538,7 @@ tr.next-event td {
 
 /* Dark Mode */
 @media (prefers-color-scheme: dark) {
-  :root {
+  html:not([data-theme="light"]) {
     --color-ink: #f0f0f0;
     --color-gray-100: #2a2a2a;
     --color-gray-300: #444444;
@@ -547,85 +547,85 @@ tr.next-event td {
     --shadow-soft: 0 16px 40px rgb(0 0 0 / 0.4);
   }
 
-  body {
+  html:not([data-theme="light"]) body {
     background: #1a1a1a;
     color: var(--color-ink);
   }
 
-  .home-page,
-  .about-page,
-  .schedule-page,
-  .membership-page,
-  .news-page,
-  .contact-page {
+  html:not([data-theme="light"]) .home-page,
+  html:not([data-theme="light"]) .about-page,
+  html:not([data-theme="light"]) .schedule-page,
+  html:not([data-theme="light"]) .membership-page,
+  html:not([data-theme="light"]) .news-page,
+  html:not([data-theme="light"]) .contact-page {
     background: #1a1a1a;
   }
 
-  .site-header {
+  html:not([data-theme="light"]) .site-header {
     background: rgb(26 26 26 / 0.92);
     border-bottom-color: var(--color-red);
   }
 
-  .nav-toggle {
+  html:not([data-theme="light"]) .nav-toggle {
     border-color: var(--color-ink);
     background: transparent;
     color: var(--color-ink);
   }
 
-  .primary-nav {
+  html:not([data-theme="light"]) .primary-nav {
     background: #1a1a1a;
     border-bottom-color: rgb(255 255 255 / 0.1);
   }
 
-  .primary-nav a:hover,
-  .primary-nav a:focus-visible {
+  html:not([data-theme="light"]) .primary-nav a:hover,
+  html:not([data-theme="light"]) .primary-nav a:focus-visible {
     background: var(--color-gray-100);
     color: var(--color-white);
   }
 
-  .primary-nav a[aria-current="page"] {
+  html:not([data-theme="light"]) .primary-nav a[aria-current="page"] {
     color: var(--color-white);
   }
 
-  .btn-secondary {
+  html:not([data-theme="light"]) .btn-secondary {
     color: var(--color-ink);
     border-color: var(--color-ink);
   }
 
-  .card {
+  html:not([data-theme="light"]) .card {
     background: #252525;
     border-color: rgb(255 255 255 / 0.1);
     box-shadow: 0 6px 14px rgb(0 0 0 / 0.3);
   }
 
-  .card-muted {
+  html:not([data-theme="light"]) .card-muted {
     background: linear-gradient(180deg, #252525, #1f1f1f);
   }
 
-  table {
+  html:not([data-theme="light"]) table {
     background: #252525;
   }
 
-  th,
-  td {
+  html:not([data-theme="light"]) th,
+  html:not([data-theme="light"]) td {
     border-bottom-color: var(--color-gray-300);
   }
 
-  th {
+  html:not([data-theme="light"]) th {
     background: #333333;
     color: var(--color-white);
   }
 
-  tr.next-event td {
+  html:not([data-theme="light"]) tr.next-event td {
     background: rgb(199 22 31 / 0.2);
   }
 
-  .month-break td {
+  html:not([data-theme="light"]) .month-break td {
     background: #252525;
     color: var(--color-red-soft);
   }
 
-  .table-wrap {
+  html:not([data-theme="light"]) .table-wrap {
     border-color: rgb(255 255 255 / 0.1);
   }
 }
