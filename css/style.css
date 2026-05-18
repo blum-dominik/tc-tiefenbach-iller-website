@@ -594,6 +594,16 @@ td.cal-actions {
     background: rgb(199 22 31 / 0.08);
     border-top-color: var(--color-red);
   }
+
+  html:not([data-theme="light"]) table tbody tr.next-event:not(.is-open):not(.is-hidden)::after,
+  html[data-theme="dark"] table tbody tr.next-event:not(.is-open):not(.is-hidden)::after {
+    background: rgb(199 22 31 / 0.2);
+  }
+
+  html:not([data-theme="light"]) table tbody tr.next-event.is-open::after,
+  html[data-theme="dark"] table tbody tr.next-event.is-open::after {
+    background: rgb(199 22 31 / 0.2);
+  }
 }
 
 .meta {
