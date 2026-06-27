@@ -264,6 +264,42 @@ img {
   z-index: 1;
 }
 
+.section-meta-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.section-meta-row .meta {
+  margin: 0;
+}
+
+.toggle-past-btn {
+  border: 1px solid var(--color-red);
+  background: var(--color-white);
+  color: var(--color-red-dark);
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.toggle-past-btn:hover,
+.toggle-past-btn:focus-visible {
+  background: var(--color-red-soft);
+  border-color: var(--color-red-dark);
+  color: var(--color-red-dark);
+}
+
+.toggle-past-btn.is-active {
+  background: var(--color-red);
+  border-color: var(--color-red);
+  color: var(--color-white);
+}
+
 .kicker {
   display: inline-block;
   margin-bottom: var(--space-2);

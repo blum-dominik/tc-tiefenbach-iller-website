@@ -83,6 +83,112 @@
     });
   }
 
+  const pastToggles = document.querySelectorAll("[data-toggle-past-events]");
+  const pastRows = document.querySelectorAll("tbody tr[data-event-date]");
+  const monthBreaks = document.querySelectorAll("tbody tr.month-break");
+
+  function getMonthKey(date) {
+    if (!date || Number.isNaN(date.getTime())) {
+      return "";
+    }
+    return date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0");
+  }
+
+  function getMonthKeyFromLabel(label) {
+    if (!label) {
+      return "";
+    }
+
+    const monthNames = [
+      "Januar",
+      "Februar",
+      "März",
+      "April",
+      "Mai",
+      "Juni",
+      "Juli",
+      "August",
+      "September",
+      "Oktober",
+      "November",
+      "Dezember"
+    ];
+    const match = label.match(/([A-Za-zÄÖÜäöüß]+)\s+(\d{4})/);
+
+    if (!match) {
+      return "";
+    }
+
+    const monthIndex = monthNames.indexOf(match[1]);
+    if (monthIndex === -1) {
+      return "";
+    }
+
+    return match[2] + "-" + String(monthIndex + 1).padStart(2, "0");
+  }
+
+  function togglePastEvents(showPast) {
+    const today = new Date();
+    const todayBoundary = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    pastRows.forEach(function (row) {
+      const value = row.getAttribute("data-event-date");
+      const start = value ? new Date(value) : null;
+      const endValue = row.getAttribute("data-event-end-date");
+      const end = endValue ? new Date(endValue) : null;
+
+      if (!start || Number.isNaN(start.getTime())) {
+        return;
+      }
+
+      const startBoundary = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      const endBoundary = end ? new Date(end.getFullYear(), end.getMonth(), end.getDate()) : null;
+      const isPast = startBoundary < todayBoundary && (!endBoundary || endBoundary < todayBoundary);
+      const shouldHide = isPast && !showPast;
+
+      row.style.display = shouldHide ? "none" : "";
+      row.classList.toggle("is-past-hidden", shouldHide);
+      row.setAttribute("aria-hidden", shouldHide ? "true" : "false");
+    });
+
+    monthBreaks.forEach(function (row) {
+      const monthKey = getMonthKeyFromLabel(row.textContent.trim());
+      if (!monthKey) {
+        return;
+      }
+
+      const monthRows = Array.from(row.parentNode.querySelectorAll("tr[data-event-date]")).filter(function (eventRow) {
+        const eventDate = eventRow.getAttribute("data-event-date");
+        const eventStart = eventDate ? new Date(eventDate) : null;
+        if (!eventStart || Number.isNaN(eventStart.getTime())) {
+          return false;
+        }
+
+        return eventRow.style.display !== "none" && getMonthKey(eventStart) === monthKey;
+      });
+
+      const shouldHideMonth = monthRows.length === 0;
+      row.style.display = shouldHideMonth ? "none" : "";
+      row.setAttribute("aria-hidden", shouldHideMonth ? "true" : "false");
+    });
+
+    pastToggles.forEach(function (toggle) {
+      toggle.textContent = showPast ? "Vergangene Termine ausblenden" : "Vergangene Termine anzeigen";
+      toggle.setAttribute("aria-expanded", String(showPast));
+      toggle.classList.toggle("is-active", showPast);
+    });
+  }
+
+  if (pastToggles.length > 0) {
+    togglePastEvents(false);
+    pastToggles.forEach(function (toggle) {
+      toggle.addEventListener("click", function () {
+        const shouldShowPast = toggle.getAttribute("aria-expanded") !== "true";
+        togglePastEvents(shouldShowPast);
+      });
+    });
+  }
+
   const calendars = document.querySelectorAll("table");
   if (calendars.length > 0) {
     const now = new Date();
