@@ -43,6 +43,10 @@
         display: block;
       }
 
+      .draw-output .actions {
+        margin-bottom: var(--space-3);
+      }
+
       .draw-result-table {
         width: 100%;
         border-collapse: collapse;
@@ -137,8 +141,14 @@ SpielerR</textarea>
 
           <div class="draw-output" id="drawOutput" aria-live="polite">
             <h3>Spiele</h3>
+            <div class="actions">
+              <button class="btn btn-primary" id="downloadMatches" type="button">Matchliste herunterladen</button>
+            </div>
             <ul id="matchList"></ul>
             <h3>Turnierbaum</h3>
+            <div class="actions">
+              <button class="btn btn-primary" id="downloadTree" type="button">Turnierbaum herunterladen</button>
+            </div>
             <table class="draw-result-table" id="treeView"></table>
           </div>
         </div>
@@ -159,6 +169,8 @@ SpielerR</textarea>
       const drawOutput = document.getElementById("drawOutput");
       const matchList = document.getElementById("matchList");
       const treeView = document.getElementById("treeView");
+      const downloadMatchesButton = document.getElementById("downloadMatches");
+      const downloadTreeButton = document.getElementById("downloadTree");
       const drawHint = document.getElementById("drawHint");
 
       function shuffle(array) {
@@ -376,6 +388,130 @@ SpielerR</textarea>
         });
       }
 
+      function downloadTreeAsHtml() {
+        if (!treeView.querySelector("tbody") || treeView.querySelectorAll("td, th").length === 0) {
+          alert("Bitte zuerst einen Draw erstellen.");
+          return;
+        }
+
+        const formattedTable = formatTableHtml(treeView);
+
+        const exportContent = "<!doctype html>\n"
+          + "<html lang=\"de\">\n"
+          + "  <head>\n"
+          + "    <meta charset=\"UTF-8\" />\n"
+          + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n"
+          + "    <title>Turnierbaum Export</title>\n"
+          + "    <style>\n"
+          + "      body { font-family: Arial, sans-serif; margin: 24px; }\n"
+          + "      table { width: 100%; border-collapse: collapse; }\n"
+          + "      th, td { border: 1px solid #999; padding: 8px; text-align: left; vertical-align: top; }\n"
+          + "      th { background: #f2f2f2; }\n"
+          + "      win { color: #c62828; }\n"
+          + "    </style>\n"
+          + "  </head>\n"
+          + "  <body>\n"
+          + formattedTable + "\n"
+          + "  </body>\n"
+          + "</html>\n";
+
+        const blob = new Blob([exportContent], { type: "text/html;charset=utf-8" });
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = downloadUrl;
+        link.download = "turnierbaum.html";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(downloadUrl);
+      }
+
+      function formatTableHtml(tableElement) {
+        const lines = [];
+        const tableAttributes = [];
+
+        if (tableElement.className) {
+          tableAttributes.push("class=\"" + tableElement.className + "\"");
+        }
+
+        if (tableElement.id) {
+          tableAttributes.push("id=\"" + tableElement.id + "\"");
+        }
+
+        const tableOpen = tableAttributes.length > 0
+          ? "    <table " + tableAttributes.join(" ") + ">"
+          : "    <table>";
+        lines.push(tableOpen);
+
+        ["thead", "tbody"].forEach(function (sectionTag) {
+          const section = tableElement.querySelector(sectionTag);
+          if (!section) {
+            return;
+          }
+
+          lines.push("      <" + sectionTag + ">");
+
+          Array.from(section.querySelectorAll(":scope > tr")).forEach(function (row) {
+            lines.push("        <tr>");
+
+            Array.from(row.children).forEach(function (cell) {
+              const tag = cell.tagName.toLowerCase();
+              const attrs = [];
+
+              if (cell.rowSpan && cell.rowSpan > 1) {
+                attrs.push("rowspan=\"" + cell.rowSpan + "\"");
+              }
+
+              if (cell.colSpan && cell.colSpan > 1) {
+                attrs.push("colspan=\"" + cell.colSpan + "\"");
+              }
+
+              const content = cell.innerHTML.trim();
+              const openTag = attrs.length > 0 ? "<" + tag + " " + attrs.join(" ") + ">" : "<" + tag + ">";
+
+              if (content.length === 0) {
+                lines.push("          " + openTag + "</" + tag + ">");
+              } else {
+                lines.push("          " + openTag + content + "</" + tag + ">");
+              }
+            });
+
+            lines.push("        </tr>");
+          });
+
+          lines.push("      </" + sectionTag + ">");
+        });
+
+        lines.push("    </table>");
+        return lines.join("\n");
+      }
+
+      function downloadMatchList() {
+        const items = Array.from(matchList.querySelectorAll("li")).map(function (item) {
+          return item.textContent.trim();
+        }).filter(function (text) {
+          return text.length > 0;
+        });
+
+        if (items.length === 0) {
+          alert("Bitte zuerst einen Draw erstellen.");
+          return;
+        }
+
+        const content = items.join("\n");
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = downloadUrl;
+        link.download = "matchliste.txt";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(downloadUrl);
+      }
+
       startDrawButton.addEventListener("click", function () {
         const rawPlayers = playersInput.value.split(/\n+/);
         const rounds = buildDraw(rawPlayers);
@@ -388,6 +524,14 @@ SpielerR</textarea>
 
         drawOutput.classList.add("is-visible");
         renderDraw(rounds);
+      });
+
+      downloadTreeButton.addEventListener("click", function () {
+        downloadTreeAsHtml();
+      });
+
+      downloadMatchesButton.addEventListener("click", function () {
+        downloadMatchList();
       });
     </script>
   </body>
