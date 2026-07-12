@@ -102,39 +102,21 @@
         <span class="kicker">Hidden page</span>
         <h1>One Point Slam</h1>
         <p>
-          Trage die Spieler ein, starte den Draw und erhalte sofort eine einfache Turnierübersicht mit Matches und einem Baum bis ins Finale.
+          Trage die Spieler ein, starte die Auslosung und erhalte sofort eine einfache Turnierübersicht mit Matches und einem Baum bis ins Finale.
         </p>
       </section>
 
       <section class="section reveal" aria-labelledby="draw-title">
         <div class="section-header">
-          <h2 id="draw-title">Turnier-Draw</h2>
-          <p class="meta">Ein Spieler pro Zeile. Bei einer ungeraden Zahl wird automatisch ein Freilos ergänzt.</p>
+          <h2 id="draw-title">Turnier-Auslosung</h2>
         </div>
 
         <div class="draw-grid">
           <div class="draw-panel">
             <label for="playersInput">Spielerliste</label>
-            <textarea id="playersInput">SpielerA
-SpielerB
-SpielerC
-SpielerD
-SpielerE
-SpielerF
-SpielerG
-SpielerH
-SpielerI
-SpielerJ
-SpielerK
-SpielerL
-SpielerM
-SpielerN
-SpielerO
-SpielerP
-SpielerQ
-SpielerR</textarea>
+            <textarea id="playersInput" placeholder="Ein Spieler pro Zeile, z.B.&#10;SpielerA&#10;SpielerB&#10;SpielerC"></textarea>
             <div class="actions">
-              <button class="btn btn-primary" id="startDraw" type="button">Draw starten</button>
+              <button class="btn btn-primary" id="startDraw" type="button">Auslosung starten</button>
             </div>
             <p class="hint" id="drawHint"></p>
           </div>
@@ -390,7 +372,7 @@ SpielerR</textarea>
 
       function downloadTreeAsHtml() {
         if (!treeView.querySelector("tbody") || treeView.querySelectorAll("td, th").length === 0) {
-          alert("Bitte zuerst einen Draw erstellen.");
+          alert("Bitte zuerst eine Auslosung erstellen.");
           return;
         }
 
@@ -495,7 +477,7 @@ SpielerR</textarea>
         });
 
         if (items.length === 0) {
-          alert("Bitte zuerst einen Draw erstellen.");
+          alert("Bitte zuerst eine Auslosung erstellen.");
           return;
         }
 
