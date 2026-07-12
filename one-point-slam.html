@@ -20,14 +20,6 @@
         gap: var(--space-4);
       }
 
-      .draw-panel {
-        background: var(--color-white);
-        border: 1px solid rgb(0 0 0 / 0.08);
-        border-radius: var(--radius);
-        padding: var(--space-4);
-        box-shadow: 0 6px 14px rgb(0 0 0 / 0.05);
-      }
-
       .draw-panel textarea {
         width: 100%;
         min-height: 180px;
@@ -51,72 +43,26 @@
         display: block;
       }
 
-      .match-list {
-        display: grid;
-        gap: var(--space-2);
-        margin: 0;
-        padding: 0;
-        list-style: none;
+      .draw-result-table {
+        width: 100%;
+        border-collapse: collapse;
       }
 
-      .match-list li {
+      .draw-result-table th,
+      .draw-result-table td {
         border: 1px solid var(--color-gray-300);
-        border-radius: var(--radius-sm);
-        padding: 0.8rem 1rem;
-        background: var(--color-gray-100);
-      }
-
-      .result-table {
-        display: grid;
-        gap: var(--space-4);
-        align-items: start;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-
-      .result-column {
-        border: 1px solid var(--color-gray-300);
-        border-radius: var(--radius);
-        padding: var(--space-3);
-        background: var(--color-gray-50);
-      }
-
-      .result-match-card {
-        border: 1px solid var(--color-gray-300);
-        border-radius: var(--radius-sm);
         padding: 0.75rem;
-        background: var(--color-white);
-        margin-bottom: 0.75rem;
+        vertical-align: top;
+        text-align: left;
       }
 
-      .result-match-card:last-child {
-        margin-bottom: 0;
-      }
-
-      .result-match-label {
-        display: block;
-        font-weight: 700;
-        margin-bottom: 0.25rem;
-        color: var(--color-red-dark);
-      }
-
-      .result-match-text {
-        display: block;
-        line-height: 1.5;
+      .draw-result-table th {
+        background: var(--color-gray-100);
       }
 
       .hint {
         color: var(--color-gray-500);
         font-size: 0.95rem;
-      }
-
-      @media (min-width: 960px) {
-        .draw-grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .result-table {
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        }
       }
     </style>
   </head>
@@ -168,20 +114,35 @@
         <div class="draw-grid">
           <div class="draw-panel">
             <label for="playersInput">Spielerliste</label>
-            <textarea id="playersInput" placeholder="Mia Muster&#10;Noah Becker&#10;Lina Weber&#10;Elias Hoffmann"></textarea>
+            <textarea id="playersInput">SpielerA
+SpielerB
+SpielerC
+SpielerD
+SpielerE
+SpielerF
+SpielerG
+SpielerH
+SpielerI
+SpielerJ
+SpielerK
+SpielerL
+SpielerM
+SpielerN
+SpielerO
+SpielerP
+SpielerQ
+SpielerR</textarea>
             <div class="actions">
               <button class="btn btn-primary" id="startDraw" type="button">Draw starten</button>
             </div>
             <p class="hint" id="drawHint">Bitte mindestens zwei Spieler eingeben.</p>
           </div>
 
-          <div class="draw-panel">
-            <div class="draw-output" id="drawOutput" aria-live="polite">
-              <h3>Spiele</h3>
-              <ul class="match-list" id="matchList"></ul>
-              <h3>Ergebnis-Tabelle</h3>
-              <div class="result-table" id="treeView"></div>
-            </div>
+          <div class="draw-output" id="drawOutput" aria-live="polite">
+            <h3>Spiele</h3>
+            <ul id="matchList"></ul>
+            <h3>Turnierbaum</h3>
+            <table class="draw-result-table" id="treeView"></table>
           </div>
         </div>
       </section>
@@ -241,100 +202,157 @@
         }
 
         const size = 1 << Math.ceil(Math.log2(cleanedPlayers.length));
-        const padded = cleanedPlayers.slice();
-        while (padded.length < size) {
-          padded.push("__BYE__");
+        const shuffledPlayers = shuffle(cleanedPlayers);
+        const firstRoundMatchCount = cleanedPlayers.length - (size / 2);
+        const seededLeaves = [];
+
+        for (let index = 0; index < firstRoundMatchCount; index += 1) {
+          seededLeaves.push({ name: shuffledPlayers[index * 2], isBye: false });
+          seededLeaves.push({ name: shuffledPlayers[index * 2 + 1], isBye: false });
         }
 
-        const shuffled = shuffle(padded);
-        const rounds = [];
+        for (let index = firstRoundMatchCount * 2; index < shuffledPlayers.length; index += 1) {
+          seededLeaves.push({ name: shuffledPlayers[index], isBye: false });
+          seededLeaves.push({ name: "Freilos", isBye: true });
+        }
+
+        while (seededLeaves.length < size) {
+          seededLeaves.push({ name: "Freilos", isBye: true });
+        }
+
         const totalRounds = Math.log2(size);
-        let currentPlayers = shuffled.map(function (player, index) {
-          return { name: player, id: index };
-        });
+        const rounds = [];
+        let currentRound = [];
         let matchNumber = 1;
 
+        for (let index = 0; index < seededLeaves.length; index += 2) {
+          const left = seededLeaves[index];
+          const right = seededLeaves[index + 1];
+          const matchLabel = "Match " + matchNumber;
+
+          currentRound.push({
+            round: getRoundLabel(0, totalRounds),
+            matchLabel: matchLabel,
+            left: left,
+            right: right,
+            displayText: left.name + " vs. " + right.name
+          });
+          matchNumber += 1;
+        }
+
+        rounds.push(currentRound);
+
         for (let index = 0; index < totalRounds; index += 1) {
+          if (index === 0) {
+            continue;
+          }
+
           const nextPlayers = [];
           const matches = [];
           const roundLabel = getRoundLabel(index, totalRounds);
+          const previousRound = rounds[index - 1];
 
-          for (let matchIndex = 0; matchIndex < currentPlayers.length; matchIndex += 2) {
-            const player1 = currentPlayers[matchIndex];
-            const player2 = currentPlayers[matchIndex + 1];
+          for (let matchIndex = 0; matchIndex < previousRound.length; matchIndex += 2) {
+            const leftMatch = previousRound[matchIndex];
+            const rightMatch = previousRound[matchIndex + 1];
 
-            if (!player1 || !player2) {
+            if (!leftMatch || !rightMatch) {
               continue;
             }
 
-            if (isByePlayer(player1) || isByePlayer(player2)) {
-              const advancingPlayer = isByePlayer(player1) ? player2 : player1;
+            if (isByePlayer(leftMatch.left) || isByePlayer(leftMatch.right) || isByePlayer(rightMatch.left) || isByePlayer(rightMatch.right)) {
+              const advancingPlayer = !isByePlayer(leftMatch.left) ? leftMatch.left : !isByePlayer(leftMatch.right) ? leftMatch.right : !isByePlayer(rightMatch.left) ? rightMatch.left : rightMatch.right;
               nextPlayers.push({
                 name: advancingPlayer.name,
-                id: advancingPlayer.id
+                isBye: advancingPlayer.isBye
               });
-              continue;
+            } else {
+              nextPlayers.push({
+                name: "Winner " + matchNumber,
+                isBye: false
+              });
             }
 
             const matchLabel = "Match " + matchNumber;
             matches.push({
               round: roundLabel,
               matchLabel: matchLabel,
-              player1: player1.name,
-              player2: player2.name
-            });
-            nextPlayers.push({
-              name: "Winner " + matchLabel,
-              id: matchNumber
+              left: leftMatch,
+              right: rightMatch,
+              displayText: "Winner " + leftMatch.matchLabel + " vs. Winner " + rightMatch.matchLabel
             });
             matchNumber += 1;
           }
 
           rounds.push(matches);
-          currentPlayers = nextPlayers;
         }
 
-        return rounds;
+        return {
+          rounds: rounds,
+          size: size
+        };
       }
 
-      function renderDraw(rounds) {
+      function renderDraw(bracket) {
         matchList.innerHTML = "";
         treeView.innerHTML = "";
 
-        const visibleRounds = rounds.slice(0, 3);
-        const columns = Array.from({ length: 3 }, function () {
-          const column = document.createElement("div");
-          column.className = "result-column";
-          return column;
-        });
+        const visibleRounds = bracket.rounds;
+        const rowCount = bracket.size;
 
-        visibleRounds.forEach(function (round, columnIndex) {
+        const headerRow = document.createElement("tr");
+        visibleRounds.forEach(function (round) {
+          const headerCell = document.createElement("th");
+          headerCell.textContent = round.length > 0 ? round[0].round : "Runde";
+          headerRow.appendChild(headerCell);
+        });
+        treeView.appendChild(document.createElement("thead")).appendChild(headerRow);
+
+        const body = document.createElement("tbody");
+        for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
+          const row = document.createElement("tr");
+
+          visibleRounds.forEach(function (round, roundIndex) {
+            const rowSpan = 1 << (roundIndex + 1);
+            if (rowIndex % rowSpan !== 0) {
+              return;
+            }
+
+            const matchIndex = rowIndex / rowSpan;
+            const match = round[matchIndex];
+
+            if (!match) {
+              return;
+            }
+
+            const cell = document.createElement("td");
+            cell.rowSpan = rowSpan;
+
+            const label = document.createElement("strong");
+            label.textContent = match.matchLabel;
+            cell.appendChild(label);
+            cell.appendChild(document.createElement("br"));
+
+            if (roundIndex === 0) {
+              cell.textContent = match.matchLabel + ": " + match.displayText;
+            } else {
+              cell.textContent = match.displayText;
+            }
+
+            row.appendChild(cell);
+          });
+
+          body.appendChild(row);
+        }
+
+        treeView.appendChild(body);
+
+        bracket.rounds.forEach(function (round) {
           round.forEach(function (match) {
             const item = document.createElement("li");
-            item.innerHTML = "<strong>" + match.round + "</strong><br />" + match.matchLabel + ": " + match.player1 + " vs. " + match.player2;
+            item.textContent = match.round + " - " + match.matchLabel + ": " + match.displayText;
             matchList.appendChild(item);
           });
-
-          round.forEach(function (match) {
-            const card = document.createElement("div");
-            card.className = "result-match-card";
-
-            const label = document.createElement("span");
-            label.className = "result-match-label";
-            label.textContent = match.matchLabel;
-
-            const details = document.createElement("span");
-            details.className = "result-match-text";
-            details.textContent = match.player1 + " vs. " + match.player2;
-
-            card.appendChild(label);
-            card.appendChild(details);
-            columns[columnIndex].appendChild(card);
-          });
-        });
-
-        columns.forEach(function (column) {
-          treeView.appendChild(column);
         });
       }
 
