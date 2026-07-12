@@ -100,9 +100,6 @@
         <p>
           Trage die Spieler ein, starte den Draw und erhalte sofort eine einfache Turnierübersicht mit Matches und einem Baum bis ins Finale.
         </p>
-        <div class="actions">
-          <a class="btn btn-primary" href="impressum.html">Zum Impressum</a>
-        </div>
       </section>
 
       <section class="section reveal" aria-labelledby="draw-title">
@@ -135,7 +132,7 @@ SpielerR</textarea>
             <div class="actions">
               <button class="btn btn-primary" id="startDraw" type="button">Draw starten</button>
             </div>
-            <p class="hint" id="drawHint">Bitte mindestens zwei Spieler eingeben.</p>
+            <p class="hint" id="drawHint"></p>
           </div>
 
           <div class="draw-output" id="drawOutput" aria-live="polite">
@@ -264,12 +261,14 @@ SpielerR</textarea>
               const advancingPlayer = !isByePlayer(leftMatch.left) ? leftMatch.left : !isByePlayer(leftMatch.right) ? leftMatch.right : !isByePlayer(rightMatch.left) ? rightMatch.left : rightMatch.right;
               nextPlayers.push({
                 name: advancingPlayer.name,
-                isBye: advancingPlayer.isBye
+                isBye: advancingPlayer.isBye,
+                displayText: advancingPlayer.name
               });
             } else {
               nextPlayers.push({
                 name: "Winner " + matchNumber,
-                isBye: false
+                isBye: false,
+                displayText: "Winner Match " + matchNumber
               });
             }
 
@@ -279,7 +278,9 @@ SpielerR</textarea>
               matchLabel: matchLabel,
               left: leftMatch,
               right: rightMatch,
-              displayText: "Winner " + leftMatch.matchLabel + " vs. Winner " + rightMatch.matchLabel
+              displayText: (leftMatch.left.isBye || leftMatch.right.isBye ? (leftMatch.left.isBye ? leftMatch.right.name : leftMatch.left.name) : "Winner " + leftMatch.matchLabel) +
+                " vs. " +
+                (rightMatch.left.isBye || rightMatch.right.isBye ? (rightMatch.left.isBye ? rightMatch.right.name : rightMatch.left.name) : "Winner " + rightMatch.matchLabel)
             });
             matchNumber += 1;
           }
@@ -334,9 +335,9 @@ SpielerR</textarea>
             cell.appendChild(document.createElement("br"));
 
             if (roundIndex === 0) {
-              cell.textContent = match.matchLabel + ": " + match.displayText;
+              cell.appendChild(document.createTextNode(match.displayText));
             } else {
-              cell.textContent = match.displayText;
+              cell.appendChild(document.createTextNode(match.displayText));
             }
 
             row.appendChild(cell);
@@ -362,11 +363,10 @@ SpielerR</textarea>
 
         if (!rounds) {
           drawOutput.classList.remove("is-visible");
-          drawHint.textContent = "Bitte mindestens zwei Spieler eingeben.";
+          alert("Bitte mindestens zwei Spieler eingeben.");
           return;
         }
 
-        drawHint.textContent = "Der Draw wurde erstellt.";
         drawOutput.classList.add("is-visible");
         renderDraw(rounds);
       });
