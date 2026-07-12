@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TC Tiefenbach/Iller | One Point Slam</title>
+    <meta
+      name="description"
+      content="Ein einfacher Turnier-Drawer für den One Point Slam mit Spieler-Eingabe und Turnierbaum."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="preload" href="fonts/manrope-400.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="fonts/manrope-700.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="fonts/bebas-neue-400.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="icon" href="images/tc-tiefenbach-logo-without-text-white.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .draw-grid {
+        display: grid;
+        gap: var(--space-4);
+      }
+
+      .draw-panel textarea {
+        width: 100%;
+        min-height: 180px;
+        padding: 0.9rem 1rem;
+        border: 1px solid var(--color-gray-300);
+        border-radius: var(--radius-sm);
+        font: inherit;
+        resize: vertical;
+      }
+
+      .draw-panel textarea:focus-visible {
+        outline: 3px solid var(--color-red);
+        outline-offset: 2px;
+      }
+
+      .draw-output {
+        display: none;
+      }
+
+      .draw-output.is-visible {
+        display: block;
+      }
+
+      .draw-output .actions {
+        margin-bottom: var(--space-3);
+      }
+
+      .draw-result-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .draw-result-table th,
+      .draw-result-table td {
+        border: 1px solid var(--color-gray-300);
+        padding: 0.75rem;
+        vertical-align: top;
+        text-align: left;
+      }
+
+      .draw-result-table th {
+        background: var(--color-gray-100);
+      }
+
+      .hint {
+        color: var(--color-gray-500);
+        font-size: 0.95rem;
+      }
+    </style>
+  </head>
+  <body class="about-page">
+    <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="index.html" aria-label="TC Tiefenbach/Iller Startseite">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand-text">TC Tiefenbach/Iller</span>
+        </a>
+        <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="primary-nav">
+          Menü
+        </button>
+        <button class="dark-mode-toggle" type="button" data-dark-toggle aria-label="Dunkelmodus umschalten" title="Dunkelmodus">
+          🌙
+        </button>
+        <nav id="primary-nav" class="primary-nav" data-primary-nav aria-label="Hauptnavigation">
+          <ul>
+            <li><a href="index.html">Startseite</a></li>
+            <li><a href="about.html">Verein</a></li>
+            <li><a href="membership.html">Mitgliedschaft</a></li>
+            <li><a href="schedule.html">Termine</a></li>
+            <li><a href="teams.html">Mannschaften</a></li>
+            <li><a href="contact.html">Kontakt</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="page">
+      <section class="hero reveal">
+        <span class="kicker">Hidden page</span>
+        <h1>One Point Slam</h1>
+        <p>
+          Trage die Spieler ein, starte den Draw und erhalte sofort eine einfache Turnierübersicht mit Matches und einem Baum bis ins Finale.
+        </p>
+      </section>
+
+      <section class="section reveal" aria-labelledby="draw-title">
+        <div class="section-header">
+          <h2 id="draw-title">Turnier-Draw</h2>
+          <p class="meta">Ein Spieler pro Zeile. Bei einer ungeraden Zahl wird automatisch ein Freilos ergänzt.</p>
+        </div>
+
+        <div class="draw-grid">
+          <div class="draw-panel">
+            <label for="playersInput">Spielerliste</label>
+            <textarea id="playersInput">SpielerA
+SpielerB
+SpielerC
+SpielerD
+SpielerE
+SpielerF
+SpielerG
+SpielerH
+SpielerI
+SpielerJ
+SpielerK
+SpielerL
+SpielerM
+SpielerN
+SpielerO
+SpielerP
+SpielerQ
+SpielerR</textarea>
+            <div class="actions">
+              <button class="btn btn-primary" id="startDraw" type="button">Draw starten</button>
+            </div>
+            <p class="hint" id="drawHint"></p>
+          </div>
+
+          <div class="draw-output" id="drawOutput" aria-live="polite">
+            <h3>Spiele</h3>
+            <div class="actions">
+              <button class="btn btn-primary" id="downloadMatches" type="button">Matchliste herunterladen</button>
+            </div>
+            <ul id="matchList"></ul>
+            <h3>Turnierbaum</h3>
+            <div class="actions">
+              <button class="btn btn-primary" id="downloadTree" type="button">Turnierbaum herunterladen</button>
+            </div>
+            <table class="draw-result-table" id="treeView"></table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p class="meta">© 2026 TC Tiefenbach/Iller</p>
+        <p class="meta"><a href="privacy-policy.html">Datenschutz</a> | <a href="impressum.html">Impressum</a></p>
+      </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+      const playersInput = document.getElementById("playersInput");
+      const startDrawButton = document.getElementById("startDraw");
+      const drawOutput = document.getElementById("drawOutput");
+      const matchList = document.getElementById("matchList");
+      const treeView = document.getElementById("treeView");
+      const downloadMatchesButton = document.getElementById("downloadMatches");
+      const downloadTreeButton = document.getElementById("downloadTree");
+      const drawHint = document.getElementById("drawHint");
+
+      function shuffle(array) {
+        const copy = array.slice();
+        for (let i = copy.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      function getRoundLabel(index, totalRounds) {
+        if (index === totalRounds - 1) {
+          return "Finale";
+        }
+        if (index === totalRounds - 2) {
+          return "Halbfinale";
+        }
+        if (index === totalRounds - 3) {
+          return "Viertelfinale";
+        }
+        return `Runde ${index + 1}`;
+      }
+
+      function isByePlayer(player) {
+        return !player || player.name === "Freilos" || player.name === "__BYE__";
+      }
+
+      function buildDraw(players) {
+        const cleanedPlayers = players.map(function (entry) {
+          return entry.trim();
+        }).filter(function (entry) {
+          return entry.length > 0;
+        });
+
+        if (cleanedPlayers.length < 2) {
+          return null;
+        }
+
+        const size = 1 << Math.ceil(Math.log2(cleanedPlayers.length));
+        const shuffledPlayers = shuffle(cleanedPlayers);
+        const firstRoundMatchCount = cleanedPlayers.length - (size / 2);
+        const seededLeaves = [];
+
+        for (let index = 0; index < firstRoundMatchCount; index += 1) {
+          seededLeaves.push({ name: shuffledPlayers[index * 2], isBye: false });
+          seededLeaves.push({ name: shuffledPlayers[index * 2 + 1], isBye: false });
+        }
+
+        for (let index = firstRoundMatchCount * 2; index < shuffledPlayers.length; index += 1) {
+          seededLeaves.push({ name: shuffledPlayers[index], isBye: false });
+          seededLeaves.push({ name: "Freilos", isBye: true });
+        }
+
+        while (seededLeaves.length < size) {
+          seededLeaves.push({ name: "Freilos", isBye: true });
+        }
+
+        const totalRounds = Math.log2(size);
+        const rounds = [];
+        let currentRound = [];
+        let matchNumber = 1;
+
+        for (let index = 0; index < seededLeaves.length; index += 2) {
+          const left = seededLeaves[index];
+          const right = seededLeaves[index + 1];
+          const matchLabel = "Match " + matchNumber;
+          const isByeMatch = isByePlayer(left) || isByePlayer(right);
+
+          currentRound.push({
+            round: getRoundLabel(0, totalRounds),
+            matchLabel: matchLabel,
+            left: left,
+            right: right,
+            isByeMatch: isByeMatch,
+            displayText: isByeMatch
+              ? (!isByePlayer(left) ? left.name : right.name)
+              : left.name + " vs. " + right.name
+          });
+
+          if (!isByeMatch) {
+            matchNumber += 1;
+          }
+        }
+
+        rounds.push(currentRound);
+
+        for (let index = 0; index < totalRounds; index += 1) {
+          if (index === 0) {
+            continue;
+          }
+
+          const nextPlayers = [];
+          const matches = [];
+          const roundLabel = getRoundLabel(index, totalRounds);
+          const previousRound = rounds[index - 1];
+
+          for (let matchIndex = 0; matchIndex < previousRound.length; matchIndex += 2) {
+            const leftMatch = previousRound[matchIndex];
+            const rightMatch = previousRound[matchIndex + 1];
+
+            if (!leftMatch || !rightMatch) {
+              continue;
+            }
+
+            if (isByePlayer(leftMatch.left) || isByePlayer(leftMatch.right) || isByePlayer(rightMatch.left) || isByePlayer(rightMatch.right)) {
+              const advancingPlayer = !isByePlayer(leftMatch.left) ? leftMatch.left : !isByePlayer(leftMatch.right) ? leftMatch.right : !isByePlayer(rightMatch.left) ? rightMatch.left : rightMatch.right;
+              nextPlayers.push({
+                name: advancingPlayer.name,
+                isBye: advancingPlayer.isBye,
+                displayText: advancingPlayer.name
+              });
+            } else {
+              nextPlayers.push({
+                name: "Winner " + matchNumber,
+                isBye: false,
+                displayText: "Winner Match " + matchNumber
+              });
+            }
+
+            const matchLabel = "Match " + matchNumber;
+            const leftHasBye = leftMatch.left.isBye || leftMatch.right.isBye;
+            const rightHasBye = rightMatch.left.isBye || rightMatch.right.isBye;
+            matches.push({
+              round: roundLabel,
+              matchLabel: matchLabel,
+              left: leftMatch,
+              right: rightMatch,
+              isByeMatch: false,
+              displayText: (leftMatch.left.isBye || leftMatch.right.isBye ? (leftMatch.left.isBye ? leftMatch.right.name : leftMatch.left.name) : "Winner " + leftMatch.matchLabel) +
+                " vs. " +
+                (rightMatch.left.isBye || rightMatch.right.isBye ? (rightMatch.left.isBye ? rightMatch.right.name : rightMatch.left.name) : "Winner " + rightMatch.matchLabel)
+            });
+            matchNumber += 1;
+          }
+
+          rounds.push(matches);
+        }
+
+        return {
+          rounds: rounds,
+          size: size
+        };
+      }
+
+      function renderDraw(bracket) {
+        matchList.innerHTML = "";
+        treeView.innerHTML = "";
+
+        const visibleRounds = bracket.rounds;
+        const rowCount = bracket.size;
+
+        const headerRow = document.createElement("tr");
+        visibleRounds.forEach(function (round) {
+          const headerCell = document.createElement("th");
+          headerCell.textContent = round.length > 0 ? round[0].round : "Runde";
+          headerRow.appendChild(headerCell);
+        });
+        treeView.appendChild(document.createElement("thead")).appendChild(headerRow);
+
+        const body = document.createElement("tbody");
+        for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
+          const row = document.createElement("tr");
+
+          visibleRounds.forEach(function (round, roundIndex) {
+            const rowSpan = 1 << (roundIndex + 1);
+            if (rowIndex % rowSpan !== 0) {
+              return;
+            }
+
+            const matchIndex = rowIndex / rowSpan;
+            const match = round[matchIndex];
+
+            if (!match) {
+              return;
+            }
+
+            const cell = document.createElement("td");
+            cell.rowSpan = rowSpan;
+
+            if (roundIndex === 0 && match.isByeMatch) {
+              row.appendChild(cell);
+              return;
+            }
+
+            const label = document.createElement("strong");
+            label.textContent = match.matchLabel;
+            cell.appendChild(label);
+            cell.appendChild(document.createElement("br"));
+
+            if (roundIndex === 0) {
+              cell.appendChild(document.createTextNode(match.displayText));
+            } else {
+              cell.appendChild(document.createTextNode(match.displayText));
+            }
+
+            row.appendChild(cell);
+          });
+
+          body.appendChild(row);
+        }
+
+        treeView.appendChild(body);
+
+        bracket.rounds.forEach(function (round) {
+          round.forEach(function (match) {
+            if (match.round === getRoundLabel(0, Math.log2(bracket.size)) && match.isByeMatch) {
+              return;
+            }
+
+            const item = document.createElement("li");
+            item.textContent = match.round + " - " + match.matchLabel + ": " + match.displayText;
+            matchList.appendChild(item);
+          });
+        });
+      }
+
+      function downloadTreeAsHtml() {
+        if (!treeView.querySelector("tbody") || treeView.querySelectorAll("td, th").length === 0) {
+          alert("Bitte zuerst einen Draw erstellen.");
+          return;
+        }
+
+        const formattedTable = formatTableHtml(treeView);
+
+        const exportContent = "<!doctype html>\n"
+          + "<html lang=\"de\">\n"
+          + "  <head>\n"
+          + "    <meta charset=\"UTF-8\" />\n"
+          + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n"
+          + "    <title>Turnierbaum Export</title>\n"
+          + "    <style>\n"
+          + "      body { font-family: Arial, sans-serif; margin: 24px; }\n"
+          + "      table { width: 100%; border-collapse: collapse; }\n"
+          + "      th, td { border: 1px solid #999; padding: 8px; text-align: left; vertical-align: top; }\n"
+          + "      th { background: #f2f2f2; }\n"
+          + "      win { color: #c62828; }\n"
+          + "    </style>\n"
+          + "  </head>\n"
+          + "  <body>\n"
+          + formattedTable + "\n"
+          + "  </body>\n"
+          + "</html>\n";
+
+        const blob = new Blob([exportContent], { type: "text/html;charset=utf-8" });
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = downloadUrl;
+        link.download = "turnierbaum.html";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(downloadUrl);
+      }
+
+      function formatTableHtml(tableElement) {
+        const lines = [];
+        const tableAttributes = [];
+
+        if (tableElement.className) {
+          tableAttributes.push("class=\"" + tableElement.className + "\"");
+        }
+
+        if (tableElement.id) {
+          tableAttributes.push("id=\"" + tableElement.id + "\"");
+        }
+
+        const tableOpen = tableAttributes.length > 0
+          ? "    <table " + tableAttributes.join(" ") + ">"
+          : "    <table>";
+        lines.push(tableOpen);
+
+        ["thead", "tbody"].forEach(function (sectionTag) {
+          const section = tableElement.querySelector(sectionTag);
+          if (!section) {
+            return;
+          }
+
+          lines.push("      <" + sectionTag + ">");
+
+          Array.from(section.querySelectorAll(":scope > tr")).forEach(function (row) {
+            lines.push("        <tr>");
+
+            Array.from(row.children).forEach(function (cell) {
+              const tag = cell.tagName.toLowerCase();
+              const attrs = [];
+
+              if (cell.rowSpan && cell.rowSpan > 1) {
+                attrs.push("rowspan=\"" + cell.rowSpan + "\"");
+              }
+
+              if (cell.colSpan && cell.colSpan > 1) {
+                attrs.push("colspan=\"" + cell.colSpan + "\"");
+              }
+
+              const content = cell.innerHTML.trim();
+              const openTag = attrs.length > 0 ? "<" + tag + " " + attrs.join(" ") + ">" : "<" + tag + ">";
+
+              if (content.length === 0) {
+                lines.push("          " + openTag + "</" + tag + ">");
+              } else {
+                lines.push("          " + openTag + content + "</" + tag + ">");
+              }
+            });
+
+            lines.push("        </tr>");
+          });
+
+          lines.push("      </" + sectionTag + ">");
+        });
+
+        lines.push("    </table>");
+        return lines.join("\n");
+      }
+
+      function downloadMatchList() {
+        const items = Array.from(matchList.querySelectorAll("li")).map(function (item) {
+          return item.textContent.trim();
+        }).filter(function (text) {
+          return text.length > 0;
+        });
+
+        if (items.length === 0) {
+          alert("Bitte zuerst einen Draw erstellen.");
+          return;
+        }
+
+        const content = items.join("\n");
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = downloadUrl;
+        link.download = "matchliste.txt";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(downloadUrl);
+      }
+
+      startDrawButton.addEventListener("click", function () {
+        const rawPlayers = playersInput.value.split(/\n+/);
+        const rounds = buildDraw(rawPlayers);
+
+        if (!rounds) {
+          drawOutput.classList.remove("is-visible");
+          alert("Bitte mindestens zwei Spieler eingeben.");
+          return;
+        }
+
+        drawOutput.classList.add("is-visible");
+        renderDraw(rounds);
+      });
+
+      downloadTreeButton.addEventListener("click", function () {
+        downloadTreeAsHtml();
+      });
+
+      downloadMatchesButton.addEventListener("click", function () {
+        downloadMatchList();
+      });
+    </script>
+  </body>
+</html>
