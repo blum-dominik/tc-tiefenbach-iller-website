@@ -226,15 +226,22 @@ SpielerR</textarea>
           const left = seededLeaves[index];
           const right = seededLeaves[index + 1];
           const matchLabel = "Match " + matchNumber;
+          const isByeMatch = isByePlayer(left) || isByePlayer(right);
 
           currentRound.push({
             round: getRoundLabel(0, totalRounds),
             matchLabel: matchLabel,
             left: left,
             right: right,
-            displayText: left.name + " vs. " + right.name
+            isByeMatch: isByeMatch,
+            displayText: isByeMatch
+              ? (!isByePlayer(left) ? left.name : right.name)
+              : left.name + " vs. " + right.name
           });
-          matchNumber += 1;
+
+          if (!isByeMatch) {
+            matchNumber += 1;
+          }
         }
 
         rounds.push(currentRound);
@@ -273,11 +280,14 @@ SpielerR</textarea>
             }
 
             const matchLabel = "Match " + matchNumber;
+            const leftHasBye = leftMatch.left.isBye || leftMatch.right.isBye;
+            const rightHasBye = rightMatch.left.isBye || rightMatch.right.isBye;
             matches.push({
               round: roundLabel,
               matchLabel: matchLabel,
               left: leftMatch,
               right: rightMatch,
+              isByeMatch: false,
               displayText: (leftMatch.left.isBye || leftMatch.right.isBye ? (leftMatch.left.isBye ? leftMatch.right.name : leftMatch.left.name) : "Winner " + leftMatch.matchLabel) +
                 " vs. " +
                 (rightMatch.left.isBye || rightMatch.right.isBye ? (rightMatch.left.isBye ? rightMatch.right.name : rightMatch.left.name) : "Winner " + rightMatch.matchLabel)
@@ -329,6 +339,11 @@ SpielerR</textarea>
             const cell = document.createElement("td");
             cell.rowSpan = rowSpan;
 
+            if (roundIndex === 0 && match.isByeMatch) {
+              row.appendChild(cell);
+              return;
+            }
+
             const label = document.createElement("strong");
             label.textContent = match.matchLabel;
             cell.appendChild(label);
@@ -350,6 +365,10 @@ SpielerR</textarea>
 
         bracket.rounds.forEach(function (round) {
           round.forEach(function (match) {
+            if (match.round === getRoundLabel(0, Math.log2(bracket.size)) && match.isByeMatch) {
+              return;
+            }
+
             const item = document.createElement("li");
             item.textContent = match.round + " - " + match.matchLabel + ": " + match.displayText;
             matchList.appendChild(item);
