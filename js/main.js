@@ -86,10 +86,13 @@
   var heroSections = Array.from(document.querySelectorAll(".hero"));
   if (heroSections.length > 0) {
     var heroImages = [
-      "https://picsum.photos/id/1059/1600/900",
-      "https://picsum.photos/id/1011/1600/900",
-      "https://picsum.photos/id/1043/1600/900",
-      "https://picsum.photos/id/1039/1600/900"
+      "images/slide-show/slide-show-1.jpeg",
+      "images/slide-show/slide-show-2.jpeg",
+      "images/slide-show/slide-show-3.jpeg",
+      "images/slide-show/slide-show-4.jpeg",
+      "images/slide-show/slide-show-5.jpeg",
+      "images/slide-show/slide-show-6.jpeg",
+      "images/slide-show/slide-show-7.jpeg"
     ];
     var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var heroSlideshows = [];
