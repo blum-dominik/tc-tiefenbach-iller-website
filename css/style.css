@@ -233,8 +233,7 @@ img {
 }
 
 .hero {
-  background:
-    linear-gradient(130deg, var(--color-black), #2c2c2c 48%, var(--color-red-dark));
+  background: var(--color-black);
   color: var(--color-white);
   border-radius: calc(var(--radius) + 6px);
   padding: var(--space-5);
@@ -243,25 +242,58 @@ img {
   position: relative;
 }
 
-.hero::after {
+.hero::before {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 80% 20%, rgb(255 255 255 / 0.14), transparent 35%),
-    repeating-linear-gradient(
-      145deg,
-      transparent,
-      transparent 10px,
-      rgb(255 255 255 / 0.04) 10px,
-      rgb(255 255 255 / 0.04) 20px
-    );
+    linear-gradient(112deg, rgb(0 0 0 / 0.78) 8%, rgb(0 0 0 / 0.52) 46%, rgb(0 0 0 / 0.38) 100%),
+    radial-gradient(circle at 78% 18%, rgb(255 255 255 / 0.14), transparent 34%);
   pointer-events: none;
+  z-index: 1;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: none;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .hero > * {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.03);
+  transition: opacity 1s ease;
+}
+
+.hero-slide.is-active {
+  opacity: 1;
+}
+
+.hero-content {
+  max-width: 700px;
+}
+
+.hero-content h1,
+.hero-content p {
+  text-shadow: 0 2px 20px rgb(0 0 0 / 0.48);
 }
 
 .section-meta-row {
@@ -753,6 +785,20 @@ td.cal-actions {
 
   tr.month-break:has(+ tr.next-event) td {
     padding-bottom: 1.25rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .hero {
+    padding: var(--space-4);
+  }
+
+  .hero-content {
+    max-width: 100%;
+  }
+
+  .hero-content p {
+    max-width: 32ch;
   }
 }
 
