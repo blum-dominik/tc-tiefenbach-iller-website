@@ -774,6 +774,10 @@ td.cal-actions {
     border-bottom: 2px solid var(--color-red);
   }
 
+  table tbody tr.next-event td:last-child {
+    border-bottom: 2px solid var(--color-red);
+  }
+
   td.cal-actions {
     white-space: nowrap;
   }
